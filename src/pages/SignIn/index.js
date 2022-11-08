@@ -1,24 +1,30 @@
 import React, { useState } from 'react';
-import { Text, TextInput, Platform, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { Text, TextInput, Platform, StyleSheet, SafeAreaView, TouchableOpacity, Keyboard } from 'react-native';
 
 export default function SignIn() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [type, setType] = useState(false);
 
-
+const clearInputs = () =>{
+  setName('');
+  setEmail('');
+  setPassword('');
+  Keyboard.dismiss();
+}
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.logo}>Whats<Text style={styles.logoSpan}>Up!</Text></Text>
       <Text style={styles.subTitle}>Ajude, colabore, faça networking!</Text>
 
-      <TextInput
+      {!type && <TextInput
         style={styles.input}
         value={name}
         onChangeText={(text) => setName(text)}
         placeholder={'Digite seu nome'}
         placeholderTextColor={'#BABABA'}
-      />
+      />}
 
       <TextInput
         style={styles.input}
@@ -38,11 +44,14 @@ export default function SignIn() {
       />
 
       <TouchableOpacity style={styles.btnArea}>
-        <Text style={styles.btnText}>Cadastrar</Text>
+        <Text style={styles.btnText}>{type ? 'Acessar': 'Cadastrar'}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity>
-        <Text>Já possui uma conta</Text>
+      <TouchableOpacity onPress={() => {
+        setType(!type);
+        clearInputs();
+        }}>
+        <Text>{type ? 'Criar uma nova conta' : 'Já possuo uma conta'}</Text>
       </TouchableOpacity>
 
     </SafeAreaView>
