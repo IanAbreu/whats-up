@@ -12,13 +12,39 @@ const AppStack = createNativeStackNavigator();
 const AppRoutes = () => {
     return (
         <AppStack.Navigator initialRouteName='ChatRoom'>
-            <AppStack.Screen component={SignIn} name={'SignIn'} options={{ title: 'Faça Login'}} />
+            <AppStack.Screen 
+                component={SignIn} 
+                name={'SignIn'} 
+                options={{ 
+                    title: 'Faça Login', 
+                    headerStyle: {
+                        backgroundColor: '#21897E'
+                    },
+                    headerTintColor: '#FFF',
+                    headerTitleStyle: {
+                        fontSize: 22,
+                    }
+                }}
+            />
 
-            <AppStack.Screen component={ChatRoom} name={'ChatRoom'} options={{headerShown: false}}/>
+            <AppStack.Screen 
+                component={ChatRoom} 
+                name={'ChatRoom'} 
+                options={{
+                    headerShown: false,
+                    }
+                }
+            />
             
-            <AppStack.Screen component={Messeges} name={'Messeges'} />
+            <AppStack.Screen 
+                component={Messeges} 
+                name={'Messeges'}
+            />
 
-            <AppStack.Screen component={Search} name={'Search'}/>
+            <AppStack.Screen 
+                component={Search} 
+                name={'Search'}
+            />
             
         </AppStack.Navigator>
         );
