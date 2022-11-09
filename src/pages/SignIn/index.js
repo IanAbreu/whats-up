@@ -1,11 +1,74 @@
 import React, { useState } from 'react';
 import { Text, TextInput, Platform, StyleSheet, SafeAreaView, TouchableOpacity, Keyboard } from 'react-native';
 
-export default function SignIn() {
+import auth from '@react-native-firebase/auth';
+import {useNavigation } from '@react-navigation/native'
+
+const SignIn = () => {
+  const navigation = useNavigation();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [type, setType] = useState(false);
+  const [type, setType] = useState(false); //true === cadastrar || false === logar
+
+
+const handleLogin = () => {
+  if (type) {
+    if (name === '' || email === '' || password === '') { 
+      alert('Preencha todos os campos para continuar');
+      return;
+    }
+
+    auth().createUserWithEmailAndPassword(email.trim().toLowerCase(), password)
+    .then((user) => {
+      user.user.updateProfile({
+        displayName: name.trim()
+      })
+      .then(() => {navigation.goBack()})
+    })
+    .catch((error) => {
+      if (error.code === 'auth/email-already-in-use') {
+        alert('Email já em uso!');
+        return;
+      }
+      if (error.code === 'auth/weak-password') {
+        alert('Senha fraca!');
+        return;
+      }
+      if (error.code === 'auth/invalid-email') {
+        alert('Email inválido!');
+        return;
+      }
+    })
+    
+  } else {
+    auth().signInWithEmailAndPassword(email.trim().toLowerCase(), password)
+    .then(() =>{
+      navigation.goBack();
+    })
+    .catch((error) => {
+      if (error.code === 'auth/invalid-email') {
+        alert('Email inválido!');
+        return;
+      }
+      if (error.code === 'auth/user-disabled') {
+        alert('Usuário desabilitado!');
+        return;
+      }
+      if (error.code === 'auth/user-not-found') {
+        alert('Usuário não encontrado!');
+        return;
+      }
+      if (error.code === 'auth/wrong-password') {
+        alert('Senha inválida!');
+        return;
+      }
+    })
+    
+  }
+
+}
 
 const clearInputs = () =>{
   setName('');
@@ -18,11 +81,11 @@ const clearInputs = () =>{
       <Text style={styles.logo}>Whats<Text style={styles.logoSpan}>Up!</Text></Text>
       <Text style={styles.subTitle}>Ajude, colabore, faça networking!</Text>
 
-      {!type && <TextInput
+      {type && <TextInput
         style={styles.input}
         value={name}
         onChangeText={(text) => setName(text)}
-        placeholder={'Digite seu nome'}
+        placeholder={'Digite seu Nome'}
         placeholderTextColor={'#BABABA'}
       />}
 
@@ -30,7 +93,7 @@ const clearInputs = () =>{
         style={styles.input}
         value={email}
         onChangeText={(text) => setEmail(text)}
-        placeholder={'Digite seu E-mail'}
+        placeholder={'Digite seu Email'}
         placeholderTextColor={'#BABABA'}
       />
 
@@ -38,25 +101,31 @@ const clearInputs = () =>{
         style={styles.input}
         value={password}
         onChangeText={(text) => setPassword(text)}
-        placeholder={'Digite sua senha'}
+        placeholder={'Digite sua Senha'}
         placeholderTextColor={'#BABABA'}
         secureTextEntry={true}
       />
 
-      <TouchableOpacity style={styles.btnArea}>
-        <Text style={styles.btnText}>{type ? 'Acessar': 'Cadastrar'}</Text>
+      <TouchableOpacity 
+      onPress={handleLogin}
+      style={styles.btnArea}>
+        <Text style={styles.btnText}>{type ? 'Cadastrar' : 'Acessar'}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => {
+      <TouchableOpacity 
+      style={{padding:20}}
+      onPress={() => {
         setType(!type);
         clearInputs();
         }}>
-        <Text>{type ? 'Criar uma nova conta' : 'Já possuo uma conta'}</Text>
+        <Text>{type ? 'Já possuo uma conta' : 'Criar uma nova conta'}</Text>
       </TouchableOpacity>
 
     </SafeAreaView>
   );
 }
+
+export default SignIn;
 
 const styles = StyleSheet.create({
   container: {
@@ -93,7 +162,6 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent:'center',
     alignItems: 'center',
-    marginBottom: 10,
     backgroundColor: '#21897E',
     borderRadius: 6,
   },
