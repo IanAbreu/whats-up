@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,7 +12,7 @@ import {
 import auth from '@react-native-firebase/auth';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
 
 import FabButton from "../../components/FabButton";
 import ModalNewRoom from '../../components/ModalNewRoom';
@@ -20,23 +20,38 @@ import ModalNewRoom from '../../components/ModalNewRoom';
 const ChatRoom = () => {
 
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
+
+  const [user, setUser] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const hasUser = auth().currentUser ? auth().currentUser.toJSON() : null
+    setUser(hasUser);
+
+
+  }, [isFocused])
 
   const handleSignOut = () => {
     auth()
       .signOut()
       .then(() => {
-        navigation.navigate('SignIn')
+        setUser(null);
+        navigation.navigate('SignIn');
       })
-      .catch(() => { console.log('nao tem usuario'); })
+      .catch(() => { navigation.navigate('SignIn'); }) //dasativar aqui
   }
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerRoom}>
         <View style={styles.headerRoomLeft}>
-          <TouchableOpacity onPress={handleSignOut}>
-            <MaterialIcons name='arrow-back' size={28} color={'#FFF'} />
-          </TouchableOpacity>
+          {
+            user &&
+            <TouchableOpacity onPress={handleSignOut}>
+              <MaterialIcons name='arrow-back' size={28} color={'#FFF'} />
+            </TouchableOpacity>
+          }
+
           <Text style={styles.title}>Grupos</Text>
 
         </View>
@@ -46,7 +61,7 @@ const ChatRoom = () => {
         </TouchableOpacity>
       </View>
 
-      <FabButton setVisible={() => setModalVisible(true)} />
+      <FabButton setVisible={() => setModalVisible(true)} userStatus={user} />
 
       <Modal visible={modalVisible} animationType={'fade'} transparent>
         <ModalNewRoom setVisible={() => setModalVisible(false)} />
@@ -65,8 +80,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 40,
-    paddingBottom: 20,
+    paddingTop: 15,
+    paddingBottom: 10,
     paddingHorizontal: 10,
     backgroundColor: '#21897E',
     borderBottomRightRadius: 20,
@@ -77,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFF',
     paddingLeft: 10

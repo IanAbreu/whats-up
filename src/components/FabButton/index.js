@@ -3,9 +3,15 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
-export default function FabButton({setVisible}) {
+import { useNavigation } from '@react-navigation/native'
+
+
+
+export default function FabButton({setVisible, userStatus}) {
+	const navigation = useNavigation();
+
 	const handleNavigateButton = () => {
-		setVisible();
+		userStatus? setVisible() : navigation.navigate('SignIn')
 	}
 
 	return (
