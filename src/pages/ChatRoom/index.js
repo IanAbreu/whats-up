@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, SafeAreaView, FlatList, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  FlatList,
+  TouchableOpacity,
+  View,
+  Modal,
+} from 'react-native';
 
 import auth from '@react-native-firebase/auth';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -7,6 +15,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation } from '@react-navigation/native'
 
 import FabButton from "../../components/FabButton";
+import ModalNewRoom from '../../components/ModalNewRoom';
 
 const ChatRoom = () => {
 
@@ -37,7 +46,11 @@ const ChatRoom = () => {
         </TouchableOpacity>
       </View>
 
-      <FabButton setVisible={()=> setModalVisible(true)}/>
+      <FabButton setVisible={() => setModalVisible(true)} />
+
+      <Modal visible={modalVisible} animationType={'fade'} transparent>
+        <ModalNewRoom setVisible={() => setModalVisible(false)} />
+      </Modal>
     </SafeAreaView>
   );
 }

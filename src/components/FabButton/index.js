@@ -12,7 +12,7 @@ export default function FabButton({setVisible}) {
 		<TouchableOpacity 
 		activeOpacity={0.9} 
 		style={styles.containerButton}
-		onPress={() => {handleNavigateButton}}
+		onPress={handleNavigateButton}
 		>
 			<View>
 				<MaterialIcons name='add' style={styles.text}/>
