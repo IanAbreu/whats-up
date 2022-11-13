@@ -1,10 +1,11 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 
-const Messeges = () => {
+const Messeges = ({ route }) => {
+  const {thread} = route.params;
   return (
     <View>
-      <Text>Messeges</Text>
+      <Text>{thread.name}</Text>
     </View>
   );
 }

@@ -38,7 +38,10 @@ const AppRoutes = () => {
             
             <AppStack.Screen 
                 component={Messeges} 
-                name={'Messeges'}
+                name={'Messages'}
+                options={({route}) => ({
+                    title: route.params.thread.name
+                })}
             />
 
             <AppStack.Screen 

@@ -1,22 +1,33 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 
-export default function ChatList({data, deleteRoom}) {
- return (
-   <TouchableOpacity onPress={()=> {}} onLongPress={() => deleteRoom && deleteRoom()}>
-    <View style={styles.row}>
-        <View style={styles.content}>
-            <View style={styles.header}>
-                <Text style={styles.nameText} numberOfLines={1}>{data.name}</Text>
-            </View>
-            <Text style={styles.contentText} numberOfLines={1}>
-                {data.lastMessage.text}
-            </Text>
+import { useNavigation } from '@react-navigation/native';
 
-        </View>
-    </View>
-   </TouchableOpacity>
-  );
+export default function ChatList({ data, deleteRoom, userStatus }) {
+    const navigation = useNavigation();
+
+    function openChat() {
+        if (userStatus) {
+            navigation.navigate('Messages', { thread: data });
+        } else {
+            navigation.navigate('SignIn');
+        }
+    }
+    return (
+        <TouchableOpacity onPress={openChat} onLongPress={() => deleteRoom && deleteRoom()}>
+            <View style={styles.row}>
+                <View style={styles.content}>
+                    <View style={styles.header}>
+                        <Text style={styles.nameText} numberOfLines={1}>{data.name}</Text>
+                    </View>
+                    <Text style={styles.contentText} numberOfLines={1}>
+                        {data.lastMessage.text}
+                    </Text>
+
+                </View>
+            </View>
+        </TouchableOpacity>
+    );
 }
 
 const styles = StyleSheet.create({

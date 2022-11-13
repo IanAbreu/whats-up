@@ -136,7 +136,7 @@ const ChatRoom = () => {
         data={threads}
         keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (<ChatList data={item} deleteRoom={() => deleteRoom(item.owner, item._id)}/>)}
+        renderItem={({ item }) => (<ChatList data={item} deleteRoom={() => deleteRoom(item.owner, item._id)} userStatus={user}/>)}
       />
 
       <FabButton setVisible={() => setModalVisible(true)} userStatus={user} />
