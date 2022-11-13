@@ -8,6 +8,7 @@ import {
   View,
   Modal,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 
 import auth from '@react-native-firebase/auth';
@@ -32,6 +33,7 @@ const ChatRoom = () => {
 
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updateScreen, setUpdateScreen] = useState(false);
 
   useEffect(() => {
     const hasUser = auth().currentUser ? auth().currentUser.toJSON() : null
@@ -64,7 +66,7 @@ const ChatRoom = () => {
       return () => isActive = false;
     }
     getChats();
-  }, [isFocused])
+  }, [isFocused, updateScreen])
 
   const handleSignOut = () => {
     auth()
@@ -74,6 +76,33 @@ const ChatRoom = () => {
         navigation.navigate('SignIn');
       })
       .catch(() => { navigation.navigate('SignIn'); }) //dasativar aqui
+  }
+  function deleteRoom(ownerId, idRoom) {
+    if (ownerId !== user?.uid) return;
+    Alert.alert(
+      "Atenção",
+      "Você tem certeza que deseja deletar essa sala?",
+      [
+        {
+          text:'Cancel',
+          onPress: () => {},
+          style:'cancel',
+        },
+        {
+          text: 'Ok',
+          onPress: () => handleDeleteRoom(idRoom),
+          style: 'default'
+        }
+      ]
+    )
+  }
+  async function handleDeleteRoom(idRoom) {
+    await firestore()
+    .collection('MESSAGE_THREADS')
+    .doc(idRoom)
+    .delete();
+
+    setUpdateScreen(!updateScreen);
   }
 
   if (loading) {
@@ -107,13 +136,16 @@ const ChatRoom = () => {
         data={threads}
         keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (<ChatList data={item}/>)}
+        renderItem={({ item }) => (<ChatList data={item} deleteRoom={() => deleteRoom(item.owner, item._id)}/>)}
       />
 
       <FabButton setVisible={() => setModalVisible(true)} userStatus={user} />
 
       <Modal visible={modalVisible} animationType={'fade'} transparent>
-        <ModalNewRoom setVisible={() => setModalVisible(false)} />
+        <ModalNewRoom 
+        setVisible={() => setModalVisible(false)}
+        setUpdateScreen={() => setUpdateScreen(!updateScreen)}
+        />
       </Modal>
     </SafeAreaView>
   );
