@@ -14,13 +14,14 @@ const SignIn = () => {
 
 
 const handleLogin = () => {
+  let emailFormated = email.trim().toLowerCase();
   if (type) {
     if (name === '' || email === '' || password === '') { 
       alert('Preencha todos os campos para continuar');
       return;
     }
 
-    auth().createUserWithEmailAndPassword(email.trim().toLowerCase(), password)
+    auth().createUserWithEmailAndPassword(emailFormated, password)
     .then((user) => {
       user.user.updateProfile({
         displayName: name.trim()
@@ -43,7 +44,7 @@ const handleLogin = () => {
     })
     
   } else {
-    auth().signInWithEmailAndPassword(email.trim().toLowerCase(), password)
+    auth().signInWithEmailAndPassword(emailFormated, password)
     .then(() =>{
       navigation.goBack();
     })
