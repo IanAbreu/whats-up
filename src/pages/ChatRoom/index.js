@@ -20,6 +20,7 @@ import { useNavigation, useIsFocused } from '@react-navigation/native'
 
 import FabButton from "../../components/FabButton";
 import ModalNewRoom from '../../components/ModalNewRoom';
+import ChatList from '../../components/ChatList';
 
 const ChatRoom = () => {
 
@@ -28,7 +29,7 @@ const ChatRoom = () => {
 
   const [user, setUser] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,29 +42,29 @@ const ChatRoom = () => {
     let isActive = true;
     function getChats() {
       firestore()
-      .collection('MESSAGE_THREADS')
-      .orderBy('lastMessage.createdAt', 'desc')
-      .limit(10)
-      .get()
-      .then((snapshot) => {
-        const threads = snapshot.docs.map(documentSnapshot => {
-          return {
-            _id: documentSnapshot.id,
-            name: '',
-            lastMessage: {text: ''},
-            ...documentSnapshot.data(),
+        .collection('MESSAGE_THREADS')
+        .orderBy('lastMessage.createdAt', 'desc')
+        .limit(10)
+        .get()
+        .then((snapshot) => {
+          const threads = snapshot.docs.map(documentSnapshot => {
+            return {
+              _id: documentSnapshot.id,
+              name: '',
+              lastMessage: { text: '' },
+              ...documentSnapshot.data(),
+            }
+          })
+          if (isActive) {
+            setThreads(threads);
+            setLoading(false);
           }
         })
-        if (isActive) {   
-          setThreads(threads);
-          setLoading(false);
-        }
-      })
 
       return () => isActive = false;
     }
     getChats();
-  },[isFocused])
+  }, [isFocused])
 
   const handleSignOut = () => {
     auth()
@@ -77,10 +78,10 @@ const ChatRoom = () => {
 
   if (loading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size='large' color='#555'/>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size='large' color='#555' />
       </View>
-    )    
+    )
   }
   return (
     <SafeAreaView style={styles.container}>
@@ -102,6 +103,13 @@ const ChatRoom = () => {
         </TouchableOpacity>
       </View>
 
+      <FlatList
+        data={threads}
+        keyExtractor={item => item._id}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (<ChatList data={item}/>)}
+      />
+
       <FabButton setVisible={() => setModalVisible(true)} userStatus={user} />
 
       <Modal visible={modalVisible} animationType={'fade'} transparent>
@@ -116,6 +124,7 @@ export default ChatRoom;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFF'
   },
   headerRoom: {
     flexDirection: 'row',
