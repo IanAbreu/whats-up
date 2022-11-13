@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function ChatList({ data, deleteRoom, userStatus }) {
     const navigation = useNavigation();
-
     function openChat() {
         if (userStatus) {
             navigation.navigate('Messages', { thread: data });
