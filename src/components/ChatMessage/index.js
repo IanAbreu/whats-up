@@ -1,5 +1,5 @@
-import React, {useMemo} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet, } from 'react-native';
 
 import auth from '@react-native-firebase/auth';
 
@@ -11,17 +11,17 @@ export default function ChatMessage({ data }) {
 
     return (
         <View style={styles.container}>
-            <View 
-            style={[
-                styles.messageBox,
-                {
-                    backgroundColor: isMyMessage ? '#DCF8C5' : '#FFF',
-                    marginLeft: isMyMessage ? 50 : 0,
-                    marginRight: isMyMessage ? 0 : 50,
-                }
-                
+            <View
+                style={[
+                    styles.messageBox,
+                    {
+                        backgroundColor: isMyMessage ? '#DCF8C5' : '#FFF',
+                        marginLeft: isMyMessage ? 50 : 0,
+                        marginRight: isMyMessage ? 0 : 50,
+                    }
+
                 ]}>
-                    {!isMyMessage && <Text style={styles.name}>{data?.user?.displayName ? data?.user?.displayName : '' }</Text>}
+                {!isMyMessage && <Text style={styles.name}>{data?.user?.displayName ? data?.user?.displayName : ''}</Text>}
                 <Text style={styles.message}>{data.text}</Text>
             </View>
         </View>
