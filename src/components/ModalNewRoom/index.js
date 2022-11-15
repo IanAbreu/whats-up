@@ -6,11 +6,11 @@ import firestore from '@react-native-firebase/firestore';
 
 const ModalNewRoom = ({ setVisible, setUpdateScreen }) => {
 
-    const [roomName, setRoomName] = useState();
+    const [roomName, setRoomName] = useState('');
     const user = auth().currentUser.toJSON();
 
     function handleButtonCreate() {
-        if (roomName === '') return;
+        if (roomName.trim() === '') return alert('Dê um nome ao seu grupo.');
 
         firestore().collection('MESSAGE_THREADS')
         .get()
@@ -29,16 +29,16 @@ const ModalNewRoom = ({ setVisible, setUpdateScreen }) => {
     function createRoom() {
         firestore().collection('MESSAGE_THREADS')
         .add({
-            name: roomName,
+            name: roomName.trim(),
             owner: user.uid,
             lastMessage: {
-                text:`Grupo ${roomName} criado. Bem vindo(a)!`,
+                text:`Grupo ${roomName.trim()} criado. Bem vindo(a)!`,
                 createdAt: firestore.FieldValue.serverTimestamp(),
             },
         })
         .then((docRef) => {
             docRef.collection('MESSAGES').add({
-                text:`Grupo ${roomName} criado. Bem vindo(a)!`,
+                text:`Grupo ${roomName.trim()} criado. Bem vindo(a)!`,
                 createdAt: firestore.FieldValue.serverTimestamp(),
                 system: true,
             })

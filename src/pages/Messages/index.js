@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Text,
   View,
   SafeAreaView,
   FlatList,
@@ -47,13 +46,43 @@ const Messages = ({ route }) => {
 
     return () => unsubscribeListener();
   }, [])
+
+  async function handleSend() {
+    if(input === '') return;
+
+    await firestore().collection('MESSAGE_THREADS')
+    .doc(thread._id)
+    .collection('MESSAGES')
+    .add({
+      text: input,
+      createdAt: firestore.FieldValue.serverTimestamp(),
+      user: {
+        _id: user.uid,
+        displayName: user.displayName,
+      }
+    })
+    await firestore().collection('MESSAGE_THREADS')
+    .doc(thread._id)
+    .set({
+      lastMessage: {
+        text: input,
+        createdAt: firestore.FieldValue.serverTimestamp(),
+      } 
+    },
+    {merge: true})
+
+    setInput('');
+
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        style={{ width: '100%' }}
+        style={styles.flatlist}
         data={messages}
         keyExtractor={(item) => String(item._id)}
         renderItem={({ item }) => (<ChatMessage data={item} />)}
+        inverted={true}
       />
 
       <KeyboardAvoidingView
@@ -74,7 +103,7 @@ const Messages = ({ route }) => {
 
           </View>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleSend}>
             <View style={styles.btnContainer}>
               <Feather name='send' size={22} color={'#FFF'} />
             </View>
@@ -120,5 +149,9 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  flatlist: {
+    width: '100%',
+    backgroundColor: '#efeae2'
   }
 })

@@ -40,7 +40,11 @@ const AppRoutes = () => {
                 component={Messages} 
                 name={'Messages'}
                 options={({route}) => ({
-                    title: route.params.thread.name
+                    title: route.params.thread.name,
+                    headerStyle: {
+                        backgroundColor: '#21897E'
+                    },
+                    headerTintColor: '#FFF',
                 })}
             />
 
