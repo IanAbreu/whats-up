@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Text, TextInput, TouchableOpacity, View, StyleSheet, Keyboard } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, StyleSheet, Keyboard, FlatList } from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 import { useIsFocused } from '@react-navigation/native';
+import ChatList from '../../components/ChatList';
 
 const Search = () => {
     const IsFocused = useIsFocused();
@@ -38,11 +39,8 @@ const Search = () => {
                     lastMessage: { text: '' },
                     ...documentSnapshot.data(),
                     }
-                  
                 })
-
                 setChats(threads);
-                console.log(threads);
                 setInput('');
                 Keyboard.dismiss();
             })
@@ -61,6 +59,11 @@ const Search = () => {
                     <MaterialIcons name='search' size={30} color={'#FFF'} />
                 </TouchableOpacity>
             </View>
+            <FlatList
+            data={chats}
+            keyExtractor={item => String(item._id)}
+            renderItem={({item}) => (<ChatList data={item} userStatus={user}/>)}
+            />
         </View>
     );
 }
