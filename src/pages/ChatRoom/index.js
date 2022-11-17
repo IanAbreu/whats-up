@@ -127,7 +127,7 @@ const ChatRoom = () => {
 
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=> navigation.navigate('Search')}>
           <MaterialIcons name='search' size={28} color={'#FFF'} />
         </TouchableOpacity>
       </View>

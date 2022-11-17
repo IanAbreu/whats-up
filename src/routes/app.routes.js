@@ -51,6 +51,13 @@ const AppRoutes = () => {
             <AppStack.Screen 
                 component={Search} 
                 name={'Search'}
+                options={{
+                    title: 'Procurando algum grupo?',
+                    headerStyle: {
+                        backgroundColor: '#21897E'
+                    },
+                    headerTintColor: '#FFF',
+                }}
             />
             
         </AppStack.Navigator>
