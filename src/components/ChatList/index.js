@@ -12,12 +12,17 @@ export default function ChatList({ data, deleteRoom, userStatus }) {
             navigation.navigate('SignIn');
         }
     }
+    function captalize(string) {
+        const captalized = string.replace(/^\w/, c => c.toUpperCase());
+        return captalized;
+    }
+
     return (
         <TouchableOpacity onPress={openChat} onLongPress={() => deleteRoom && deleteRoom()}>
             <View style={styles.row}>
                 <View style={styles.content}>
                     <View style={styles.header}>
-                        <Text style={styles.nameText} numberOfLines={1}>{data.name}</Text>
+                        <Text style={styles.nameText} numberOfLines={1}>{captalize(data.name)}</Text>
                     </View>
                     <Text style={styles.contentText} numberOfLines={1}>
                         {data.lastMessage.text}

@@ -27,18 +27,20 @@ const ModalNewRoom = ({ setVisible, setUpdateScreen }) => {
     }
 
     function createRoom() {
+        const roomNameFormated = roomName.trim().toLowerCase();
+
         firestore().collection('MESSAGE_THREADS')
         .add({
-            name: roomName.trim(),
+            name: roomNameFormated,
             owner: user.uid,
             lastMessage: {
-                text:`Grupo ${roomName.trim()} criado. Bem vindo(a)!`,
+                text:`Grupo ${roomNameFormated} criado. Bem vindo(a)!`,
                 createdAt: firestore.FieldValue.serverTimestamp(),
             },
         })
         .then((docRef) => {
             docRef.collection('MESSAGES').add({
-                text:`Grupo ${roomName.trim()} criado. Bem vindo(a)!`,
+                text:`Grupo ${roomNameFormated} criado. Bem vindo(a)!`,
                 createdAt: firestore.FieldValue.serverTimestamp(),
                 system: true,
             })
